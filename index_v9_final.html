@@ -1,0 +1,85 @@
+
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>일월십사일</title>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Noto Sans KR',sans-serif;background:linear-gradient(180deg,#f7f4ec,#efe6d5);overflow-x:hidden}
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:18px}
+.card{width:min(420px,100%);background:#173324;color:#f6f2ea;border-radius:32px;padding:44px 24px;box-shadow:0 25px 70px rgba(0,0,0,.23);text-align:center;animation:intro .9s cubic-bezier(.22,.61,.36,1)}
+@keyframes intro{from{opacity:0;transform:translateY(60px) scale(.97)}to{opacity:1;transform:none}}
+.logo{width:175px;display:block;margin:auto}
+.eng{letter-spacing:6px;margin-top:10px}
+.scroll{margin-top:36px;opacity:.8;animation:bounce 2s infinite}
+@keyframes bounce{50%{transform:translateY(10px)}}
+main{background:#173324;color:#f6f2ea;border-radius:40px 40px 0 0;margin-top:-30px;padding:60px 0 80px}
+.wrap{max-width:420px;margin:auto;padding:0 18px}
+.block{opacity:0;transform:translateY(40px);transition:all .8s cubic-bezier(.22,.61,.36,1)}
+.block.show{opacity:1;transform:none}
+.block:nth-child(2){transition-delay:.1s}.block:nth-child(3){transition-delay:.2s}.block:nth-child(4){transition-delay:.3s}.block:nth-child(5){transition-delay:.4s}.block:nth-child(6){transition-delay:.5s}
+h2{font-family:'Gowun Batang',serif;line-height:1.5;margin-bottom:22px}
+p{line-height:1.9}
+.btn{display:flex;align-items:center;justify-content:center;text-decoration:none;font-weight:700;padding:17px;border-radius:16px;margin-top:16px;transition:.25s;box-shadow:0 10px 24px rgba(0,0,0,.15)}
+.btn:hover{transform:translateY(-3px)}
+.naver{background:#fff;color:#173324}
+.insta{color:#fff;background:linear-gradient(45deg,#f58529,#feda77,#dd2a7b,#8134af,#515bd4)}
+.brand{text-align:center;padding-top:48px}
+.brand img{width:140px;filter:drop-shadow(1px 0 #fff) drop-shadow(-1px 0 #fff) drop-shadow(0 1px #fff) drop-shadow(0 -1px #fff)}
+.brand h3{margin-top:14px;letter-spacing:4px}
+.brand small{display:block;margin-top:6px;opacity:.9;letter-spacing:2px}
+.copy{margin-top:14px;font-size:.9rem;opacity:.9;line-height:1.8}
+</style>
+</head>
+<body>
+<section class="hero">
+<div class="card">
+<img class="logo" src="image_8bc904(2).png">
+<div class="eng">COFFEE &amp; PUB</div>
+<div class="scroll">⌄<br>SCROLL</div>
+</div>
+</section>
+
+<main>
+<div class="wrap">
+<div class="block">
+<h2>오늘 '일월십사일'에서의 하루는 어떠셨나요?</h2>
+<p>소중한 순간을 기록해 주세요.</p>
+</div>
+
+<div class="block">
+<p><strong>참여 혜택</strong><br>시원한 아이스 아메리카노 1잔 제공</p>
+</div>
+
+<div class="block">
+<p><strong>참여 방법</strong><br>네이버 영수증 리뷰 작성 후 사장님께 보여주세요.</p>
+</div>
+
+<div class="block">
+<a class="btn naver" href="https://m.place.naver.com/my/checkin"><img src="image(52).png" width="26" style="margin-right:8px">네이버 리뷰 작성하기</a>
+</div>
+
+<div class="block">
+<a class="btn insta" href="https://www.instagram.com/cafe114_nsu?igsh=aXQwY28yMTZhdGNp">📷 인스타그램 구경하기</a>
+</div>
+
+<div class="block brand">
+<img src="로고.png">
+<h3>SAFETIQUE</h3>
+<small>Enhancing safety naturally in every space.</small>
+<div class="copy">공간의 분위기 속에,<br>안전을 자연스럽게 더합니다.</div>
+</div>
+
+</div>
+</main>
+
+<script>
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('show')}),{threshold:.15});
+document.querySelectorAll('.block').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
