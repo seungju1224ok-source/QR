@@ -83,166 +83,37 @@ const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.targe
 document.querySelectorAll('.block').forEach(el=>io.observe(el));
 
 // [기능 1] 방문자 수 카운터 실시간 연동 및 누적
-// [기능 1] 방문자 수 카운터: 방문자당 1회만 카운팅되도록 수정
 async function updateCounter() {
-    // 이미 이 기기에서 방문한 기록이 있는지 확인
-    if (localStorage.getItem('hasVisited')) {
-        // 기록이 있다면 숫자만 가져와서 표시 (증가시키지 않음)
-        fetch('https://api.counterapi.dev/v1/ilwol14_orangutan/visits')
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('visit-count').innerText = data.value.toLocaleString();
-            });
-        return;
-    }
-
-    // 기록이 없다면 처음 방문으로 간주하고 +1 호출
     try {
+        // 접속할 때마다 숫자를 1씩 올려주는 up 주소 호출
         const response = await fetch('https://api.counterapi.dev/v1/ilwol14_orangutan/visits/up');
         const data = await response.json();
-        
-        // 화면에 표시
+        // 화면에 천 단위 쉼표(,)를 붙여서 숫자를 표시합니다
         document.getElementById('visit-count').innerText = data.value.toLocaleString();
-        
-        // 방문 기록을 로컬 스토리지에 저장 (이 기기는 다시 +1 안 함)
-        localStorage.setItem('hasVisited', 'true');
-    } catch (error) {
-        console.error('Counter Error:', error);
-        document.getElementById('visit-count').innerText = '-';<!doctype html>
-<html lang="ko">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>일월십사일</title>
-<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{font-family:'Noto Sans KR',sans-serif;background:linear-gradient(180deg,#f7f4ec,#efe6d5);overflow-x:hidden}
-.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:18px}
-.card{width:min(420px,100%);background:#173324;color:#f6f2ea;border-radius:32px;padding:44px 24px;box-shadow:0 25px 70px rgba(0,0,0,.23);text-align:center;animation:intro .9s cubic-bezier(.22,.61,.36,1)}
-@keyframes intro{from{opacity:0;transform:translateY(60px) scale(.97)}to{opacity:1;transform:none}}
-.logo{width:175px;display:block;margin:auto}
-.eng{letter-spacing:6px;margin-top:10px}
-.scroll{margin-top:36px;opacity:.8;animation:bounce 2s infinite}
-@keyframes bounce{50%{transform:translateY(10px)}}
-main{background:#173324;color:#f6f2ea;border-radius:40px 40px 0 0;margin-top:-30px;padding:60px 0 80px}
-.wrap{max-width:420px;margin:auto;padding:0 18px}
-.block{opacity:0;transform:translateY(40px);transition:all .8s cubic-bezier(.22,.61,.36,1)}
-.block.show{opacity:1;transform:none}
-.block:nth-child(2){transition-delay:.1s}.block:nth-child(3){transition-delay:.2s}.block:nth-child(4){transition-delay:.3s}.block:nth-child(5){transition-delay:.4s}.block:nth-child(6){transition-delay:.5s}
-h2{font-family:'Gowun Batang',serif;line-height:1.5;margin-bottom:22px}
-p{line-height:1.9}
-.btn{display:flex;align-items:center;justify-content:center;text-decoration:none;font-weight:700;padding:17px;border-radius:16px;margin-top:16px;transition:.25s;box-shadow:0 10px 24px rgba(0,0,0,.15);cursor:pointer;}
-.btn:hover{transform:translateY(-3px)}
-.naver{background:#fff;color:#173324}
-.insta{color:#fff;background:linear-gradient(45deg,#f58529,#feda77,#dd2a7b,#8134af,#515bd4)}
-.brand{text-align:center;padding-top:48px}
-.brand img{width:140px;filter:drop-shadow(1px 0 #fff) drop-shadow(-1px 0 #fff) drop-shadow(0 1px #fff) drop-shadow(0 -1px #fff)}
-.brand h3{margin-top:14px;letter-spacing:4px}
-.brand small{display:block;margin-top:6px;opacity:.9;letter-spacing:2px}
-.copy{margin-top:14px;font-size:.9rem;opacity:.9;line-height:1.8}
-/* 방문자 카운터 스타일 디자인 */
-.counter-box{text-align:center;margin-top:50px;font-size:0.85rem;opacity:0.6;letter-spacing:1px;}
-</style>
-</head>
-<body>
-<section class="hero">
-<div class="card">
-<img class="logo" src="image_8bc904(2).png">
-<div class="eng">COFFEE &amp; PUB</div>
-<div class="scroll">⌄<br>SCROLL</div>
-</div>
-</section>
-
-<main>
-<div class="wrap">
-<div class="block">
-<h2>오늘 '일월십사일'에서의 하루는 어떠셨나요?</h2>
-<p>소중한 순간을 기록해 주세요.</p>
-</div>
-
-<div class="block">
-<p><strong>참여 혜택</strong><br>시원한 아이스 아메리카노 1잔 제공</p>
-</div>
-
-<div class="block">
-<p><strong>참여 방법</strong><br>네이버 영수증 리뷰 작성 후 사장님께 보여주세요.</p>
-</div>
-
-<div class="block">
-<a class="btn naver" id="naver-btn"><img src="image(52).png" width="26" style="margin-right:8px">네이버 리뷰 작성하기</a>
-</div>
-
-<div class="block">
-<a class="btn insta" href="https://www.instagram.com/cafe114_nsu?igsh=aXQwY28yMTZhdGNp">📷 인스타그램 구경하기</a>
-</div>
-
-<div class="block brand">
-<img src="로고.png">
-<h3>SAFETIQUE</h3>
-<small>Enhancing safety naturally in every space.</small>
-<div class="copy">공간의 분위기 속에,<br>안전을 자연스럽게 더합니다.</div>
-</div>
-
-<div class="block counter-box">
-■ 총 방문자 수: <span id="visit-count">...</span>명
-</div>
-
-</div>
-</main>
-
-<script>
-const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('show')}),{threshold:.15});
-document.querySelectorAll('.block').forEach(el=>io.observe(el));
-
-// [수정 부분 2] 완전한 중복 카운팅 방지 로직 설계
-async function updateCounter() {
-    try {
-        if (localStorage.getItem('hasVisited')) {
-            // [A] 이미 방문 기록이 존재할 때: up을 빼고 순수 조회용 주소만 호출하여 실시간 증가를 완전히 원천 차단
-            const response = await fetch('https://api.counterapi.dev/v1/ilwol14_orangutan/visits');
-            const data = await response.json();
-            document.getElementById('visit-count').innerText = data.value.toLocaleString();
-        } else {
-            // [B] 아예 처음 방문했을 때: 증가용 up 주소 호출 후 브라우저에 쿠키(Local Storage) 박기
-            const response = await fetch('https://api.counterapi.dev/v1/ilwol14_orangutan/visits/up');
-            const data = await response.json();
-            document.getElementById('visit-count').innerText = data.value.toLocaleString();
-            
-            // 이 컴퓨터 브라우저에는 방문 도장(hasVisited)을 찍어 다음 새로고침부터는 [A]로 빠지게 유도
-            localStorage.setItem('hasVisited', 'true');
-        }
     } catch (error) {
         console.error('Counter Error:', error);
         document.getElementById('visit-count').innerText = '-';
     }
 }
-
-// 페이지 로드 시 카운팅 함수 구동
 updateCounter();
 
 // [기능 2] 네이버 버튼 클릭 시 네이버 전용 앱으로 다이렉트 연결
 document.getElementById('naver-btn').addEventListener('click', function(e) {
     e.preventDefault();
     const targetUrl = "https://m.place.naver.com/my/checkin";
+    // 네이버 앱 인앱브라우저를 강제로 열어주는 커스텀 스키마 주소
     const naverScheme = "naversearchapp://inappbrowser?url=" + encodeURIComponent(targetUrl) + "&target=new&version=6";
+    
+    // 모바일 기기(아이폰/안드로이드)인지 판별
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
     
     if (isMobile) {
         location.href = naverScheme;
     } else {
+        // PC 접속일 때는 정상적으로 일반 새 창으로 띄워줍니다
         window.open(targetUrl, '_blank');
     }
 });
-</script>
-</body>
-</html>
-    }
-}
-
-// 페이지 로드 시 실행
-updateCounter();
 </script>
 </body>
 </html>
