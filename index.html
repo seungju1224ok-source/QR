@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="ko">
 <head>
@@ -23,17 +24,15 @@ main{background:#173324;color:#f6f2ea;border-radius:40px 40px 0 0;margin-top:-30
 .block:nth-child(2){transition-delay:.1s}.block:nth-child(3){transition-delay:.2s}.block:nth-child(4){transition-delay:.3s}.block:nth-child(5){transition-delay:.4s}.block:nth-child(6){transition-delay:.5s}
 h2{font-family:'Gowun Batang',serif;line-height:1.5;margin-bottom:22px}
 p{line-height:1.9}
-.btn{display:flex;align-items:center;justify-content:center;text-decoration:none;font-weight:700;padding:17px;border-radius:16px;margin-top:16px;transition:.25s;box-shadow:0 10px 24px rgba(0,0,0,.15);cursor:pointer;}
+.btn{display:flex;align-items:center;justify-content:center;text-decoration:none;font-weight:700;padding:17px;border-radius:16px;margin-top:16px;transition:.25s;box-shadow:0 10px 24px rgba(0,0,0,.15)}
 .btn:hover{transform:translateY(-3px)}
 .naver{background:#fff;color:#173324}
 .insta{color:#fff;background:linear-gradient(45deg,#f58529,#feda77,#dd2a7b,#8134af,#515bd4)}
 .brand{text-align:center;padding-top:48px}
-.brand img{width:140px;filter:drop-shadow(1px 0 #fff) drop-shadow(-1px 0 #fff) drop-shadow(0 1px #fff) drop-shadow(0 -1px #fff)}
+.brand img{width:93px;filter:drop-shadow(1px 0 #fff) drop-shadow(-1px 0 #fff) drop-shadow(0 1px #fff) drop-shadow(0 -1px #fff)}
 .brand h3{margin-top:14px;letter-spacing:4px}
 .brand small{display:block;margin-top:6px;opacity:.9;letter-spacing:2px}
 .copy{margin-top:14px;font-size:.9rem;opacity:.9;line-height:1.8}
-/* 방문자 카운터 스타일 디자인 */
-.counter-box{text-align:center;margin-top:50px;font-size:0.85rem;opacity:0.6;letter-spacing:1px;}
 </style>
 </head>
 <body>
@@ -61,7 +60,7 @@ p{line-height:1.9}
 </div>
 
 <div class="block">
-<a class="btn naver" id="naver-btn"><img src="image(52).png" width="26" style="margin-right:8px">네이버 리뷰 작성하기</a>
+<a class="btn naver" href="https://m.place.naver.com/my/checkin"><img src="image(52).png" width="26" style="margin-right:8px">네이버 리뷰 작성하기</a>
 </div>
 
 <div class="block">
@@ -79,41 +78,51 @@ p{line-height:1.9}
 </main>
 
 <script>
+// 기존 스크롤 애니메이션 옵저버
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('show')}),{threshold:.15});
 document.querySelectorAll('.block').forEach(el=>io.observe(el));
 
-// [기능 1] 방문자 수 카운터 실시간 연동 및 누적
-async function updateCounter() {
-    try {
-        // 접속할 때마다 숫자를 1씩 올려주는 up 주소 호출
-        const response = await fetch('https://api.counterapi.dev/v1/ilwol14_orangutan/visits/up');
-        const data = await response.json();
-        // 화면에 천 단위 쉼표(,)를 붙여서 숫자를 표시합니다
-        document.getElementById('visit-count').innerText = data.value.toLocaleString();
-    } catch (error) {
-        console.error('Counter Error:', error);
-        document.getElementById('visit-count').innerText = '-';
-    }
-}
-updateCounter();
+// 방문자 카운팅 스크립트
+const trackVisits = async () => {
+    // 💡 참고: 동일 탭에서 새로고침 시 숫자가 올라가지 않도록 막는 기능입니다.
+    // 테스트로 계속 숫자를 올리고 싶으시다면 아래 두 줄을 잠시 지우거나 // 로 주석 처리하세요.
+    if (sessionStorage.getItem('visited_ilwol14')) return;
+    sessionStorage.setItem('visited_ilwol14', 'true');
+    
+    const namespace = 'ilwol14_orangutan';
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const date = String(now.getDate()).padStart(2, '0');
+    
+    // 주차 계산
+    const d = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
+    const dayNum = d.getUTCDay() || 7;
+    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+    const yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+    const weekNo = Math.ceil((((d - yearStart) / 86400000) + 1)/7);
+    const week = String(weekNo).padStart(2, '0');
+    const weekYear = d.getUTCFullYear();
 
-// [기능 2] 네이버 버튼 클릭 시 네이버 전용 앱으로 다이렉트 연결
-document.getElementById('naver-btn').addEventListener('click', function(e) {
-    e.preventDefault();
-    const targetUrl = "https://m.place.naver.com/my/checkin";
-    // 네이버 앱 인앱브라우저를 강제로 열어주는 커스텀 스키마 주소
-    const naverScheme = "naversearchapp://inappbrowser?url=" + encodeURIComponent(targetUrl) + "&target=new&version=6";
-    
-    // 모바일 기기(아이폰/안드로이드)인지 판별
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    
-    if (isMobile) {
-        location.href = naverScheme;
-    } else {
-        // PC 접속일 때는 정상적으로 일반 새 창으로 띄워줍니다
-        window.open(targetUrl, '_blank');
+    const keys = [
+        'visits_total', 
+        `visits_${year}`, 
+        `visits_${year}_${month}`, 
+        `visits_${year}_${month}_${date}`, 
+        `visits_${weekYear}_W${week}`
+    ];
+
+    // API 서버 과부하 방지를 위해 하나씩 순차적으로 전송 (안정성 강화)
+    for (const key of keys) {
+        try {
+            await fetch(`https://api.counterapi.dev/v1/${namespace}/${key}/up`);
+        } catch (err) {
+            console.error(`방문자 카운트 에러(${key}):`, err);
+        }
     }
-});
+};
+
+trackVisits();
 </script>
 </body>
 </html>
