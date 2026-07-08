@@ -82,47 +82,7 @@ p{line-height:1.9}
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('show')}),{threshold:.15});
 document.querySelectorAll('.block').forEach(el=>io.observe(el));
 
-// 방문자 카운팅 스크립트
-const trackVisits = async () => {
-    // 💡 참고: 동일 탭에서 새로고침 시 숫자가 올라가지 않도록 막는 기능입니다.
-    // 테스트로 계속 숫자를 올리고 싶으시다면 아래 두 줄을 잠시 지우거나 // 로 주석 처리하세요.
-    if (sessionStorage.getItem('visited_ilwol14')) return;
-    sessionStorage.setItem('visited_ilwol14', 'true');
-    
-    const namespace = 'ilwol14_orangutan';
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const date = String(now.getDate()).padStart(2, '0');
-    
-    // 주차 계산
-    const d = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
-    const dayNum = d.getUTCDay() || 7;
-    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
-    const yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
-    const weekNo = Math.ceil((((d - yearStart) / 86400000) + 1)/7);
-    const week = String(weekNo).padStart(2, '0');
-    const weekYear = d.getUTCFullYear();
 
-    const keys = [
-        'visits_total', 
-        `visits_${year}`, 
-        `visits_${year}_${month}`, 
-        `visits_${year}_${month}_${date}`, 
-        `visits_${weekYear}_W${week}`
-    ];
-
-    // API 서버 과부하 방지를 위해 하나씩 순차적으로 전송 (안정성 강화)
-    for (const key of keys) {
-        try {
-            await fetch(`https://api.counterapi.dev/v1/${namespace}/${key}/up`);
-        } catch (err) {
-            console.error(`방문자 카운트 에러(${key}):`, err);
-        }
-    }
-};
-
-trackVisits();
 <script type="module" src="js/visitor.js"></script>
 </body>
 </html>
