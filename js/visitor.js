@@ -127,14 +127,21 @@ async function increaseVisitor() {
       const shouldResetMonth = data.lastMonth !== current.month;
       const shouldResetYear = data.lastYear !== current.year;
 
-      // Reset changed periods to 0 first, then add the current visitor.
-      // total is never reset.
+      // Resettable counters are written with explicit numeric values.
+      // If a period changed, store 1 directly for the current visitor.
+      // Only periods that did not reset are calculated as previous value + 1.
+      const nextTotal = readCount(data.total) + 1;
+      const nextToday = shouldResetDay ? 1 : readCount(data.today) + 1;
+      const nextWeek = shouldResetWeek ? 1 : readCount(data.week) + 1;
+      const nextMonth = shouldResetMonth ? 1 : readCount(data.month) + 1;
+      const nextYear = shouldResetYear ? 1 : readCount(data.year) + 1;
+
       transaction.update(statRef, {
-        total: readCount(data.total) + 1,
-        today: (shouldResetDay ? 0 : readCount(data.today)) + 1,
-        week: (shouldResetWeek ? 0 : readCount(data.week)) + 1,
-        month: (shouldResetMonth ? 0 : readCount(data.month)) + 1,
-        year: (shouldResetYear ? 0 : readCount(data.year)) + 1,
+        total: nextTotal,
+        today: nextToday,
+        week: nextWeek,
+        month: nextMonth,
+        year: nextYear,
         lastResetDate: current.date,
         lastWeek: current.week,
         lastMonth: current.month,
