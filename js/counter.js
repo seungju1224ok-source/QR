@@ -5,9 +5,13 @@ import {
   onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+console.log("counter.js loaded");
+
 const ref = doc(db, "visitors", "stats");
 
 onSnapshot(ref, (docSnap) => {
+
+    console.log(docSnap.data());
 
     if (!docSnap.exists()) return;
 
@@ -19,7 +23,6 @@ onSnapshot(ref, (docSnap) => {
     document.getElementById("stat-month").textContent = d.month;
     document.getElementById("stat-year").textContent = d.year;
 
-    // 추가
     document.getElementById("loading").style.display = "none";
     document.getElementById("stats").style.display = "grid";
 
